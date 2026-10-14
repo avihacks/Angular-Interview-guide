@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Angular Interview Q&A Study Guide</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        angular: {
+                            red: '#DD0031',
+                            darkRed: '#C3002F',
+                            pink: '#E30032',
+                            lightBg: '#F8FAFC',
+                            darkBg: '#0F172A',
+                            cardLight: '#FFFFFF',
+                            cardDark: '#1E293B',
+                            textLight: '#334155',
+                            textDark: '#F1F5F9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        /* Typewriter cursor effect */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-angular-lightBg dark:bg-angular-darkBg text-angular-textLight dark:text-angular-textDark transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-angular-cardDark/80 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-angular-red to-pink-600 flex items-center justify-center text-white shadow-md shadow-angular-red/30">
+                    <i class="fa-brands fa-angular text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-angular-red to-pink-500 bg-clip-text text-transparent">Angular Study Guide</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Interview Q&A • Signals • RxJS • Modern Standalone</p>
+                </div>
+            </div>
+
+            <!-- Search and Controls -->
+            <div class="flex items-center space-x-3">
+                <div class="relative hidden md:block w-64">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search text-sm"></i>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Search questions..." class="w-full pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-angular-red transition-all">
+                </div>
+
+                <!-- Typewriter toggle -->
+                <button id="toggleTypewriter" title="Toggle Typewriter Animation Effect" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 dark:bg-red-950/40 text-angular-red border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center space-x-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span class="hidden sm:inline">Typewriter Mode</span>
+                </button>
+
+                <!-- GitHub Guide Modal Trigger -->
+                <button onclick="openGithubModal()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white/90 transition-colors flex items-center space-x-1.5 shadow-sm">
+                    <i class="fa-brands fa-github text-sm"></i>
+                    <span>GitHub Setup</span>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    <i class="fa-solid fa-sun dark:hidden text-amber-500"></i>
+                    <i class="fa-solid fa-moon hidden dark:block text-sky-400"></i>
+                </button>
+
+                <!-- Mobile Sidebar Toggle -->
+                <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-4 gap-8 py-8 relative">
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-angular-cardDark border-r border-slate-200 dark:border-slate-800 p-6 transform -translate-x-full lg:translate-x-0 lg:static lg:w-auto lg:bg-transparent lg:border-none lg:p-0 transition-transform duration-300 flex flex-col h-full lg:h-auto overflow-y-auto">
+            <div class="flex items-center justify-between lg:hidden mb-6">
+                <span class="font-bold text-lg">Table of Contents</span>
+                <button id="closeSidebar" class="p-2 text-slate-500 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="space-y-6 sticky top-24">
+                <div class="space-y-1">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-3">Quick Navigation</p>
+                    <a href="#intro" class="nav-link flex items-center space-x-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-angular-red dark:hover:bg-red-950/30 transition-colors">
+                        <i class="fa-solid fa-house-chimney w-5 text-center"></i>
+                        <span>How to Use Guide</span>
+                    </a>
+                </div>
+
+                <div class="space-y-1">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-3">Parts & Topics</p>
+                    <div id="categoryNavList" class="space-y-1">
+                        <!-- Dynamically populated or static fast links -->
+                        <a href="#part-1" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">1. Angular Fundamentals</a>
+                        <a href="#part-2" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">2. Components & Templates</a>
+                        <a href="#part-3" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">3. Data Binding & Directives</a>
+                        <a href="#part-4" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">4. Services & DI</a>
+                        <a href="#part-5" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">5. Lifecycle Hooks</a>
+                        <a href="#part-6" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">6. RxJS & Asynchronous</a>
+                        <a href="#part-7" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">7. HTTP Client & APIs</a>
+                        <a href="#part-8" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">8. TypeScript Interview Qs</a>
+                        <a href="#part-9" class="nav-link block px-3 py-1.5 text-sm rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">9. Modern Angular (Signals)</a>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-gradient-to-br from-red-500/10 to-pink-500/10 rounded-2xl border border-angular-red/20">
+                    <h4 class="font-semibold text-sm text-angular-red mb-1">Study Tip</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Master modern standalone components, signals, and control flow tags (@if/@for) for 2026 interviews!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lg:col-span-3 space-y-10">
+
+            <!-- Introduction Card -->
+            <section id="intro" class="bg-white dark:bg-angular-cardDark rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-angular-red/10 to-pink-500/0 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-red-50 dark:bg-red-950/50 text-angular-red text-xs font-semibold mb-4">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Comprehensive Study Companion</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-3">Angular Interview Questions & Answers</h2>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                        Modern Angular • Fundamentals • TypeScript • RxJS • Practical Code. Study guide with concise interview-ready answers and code examples. Examples reflect modern standalone Angular where practical; legacy syntax is included for interview awareness.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-800/80 pt-6">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-950/60 text-angular-red flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-sm">Short Answer</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Learn crisp, interviewer-friendly definitions first.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-950/60 text-angular-red flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-sm">Code Examples</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Explain snippets in your own words.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-950/60 text-angular-red flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="font-bold text-sm">3</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-sm">Syntax Contrast</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Compare *ngIf/*ngFor vs @if/@for control flows.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Questions Container (Populated via JavaScript) -->
+            <div id="questionsContainer" class="space-y-10">
+                <!-- Dynamic question cards will be injected here -->
+            </div>
+
+            <!-- Bottom Navigation/Action Footer -->
+            <div class="bg-gradient-to-r from-angular-cardDark to-slate-900 text-white rounded-2xl p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-xl font-bold mb-1">Ready to upload this to GitHub?</h3>
+                    <p class="text-slate-400 text-sm">Follow our simple guide to turn this website into a permanent repository.</p>
+                </div>
+                <button onclick="openGithubModal()" class="px-6 py-3 bg-angular-red hover:bg-angular-darkRed text-white font-semibold rounded-xl shadow-lg shadow-angular-red/30 transition-all flex items-center space-x-2">
+                    <i class="fa-brands fa-github text-lg"></i>
+                    <span>View GitHub Upload Guide</span>
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- GitHub Guide Modal -->
+    <div id="githubModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-angular-cardDark w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-brands fa-github text-xl text-angular-red"></i>
+                    <h3 class="font-bold text-lg">How to Upload & Host on GitHub</h3>
+                </div>
+                <button onclick="closeGithubModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-sm">
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-angular-red flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-xs">1</span>
+                        <span>Create a New GitHub Repository</span>
+                    </h4>
+                    <p class="text-slate-600 dark:text-slate-300 pl-8">Go to <a href="https://github.com" target="_blank" class="text-angular-red underline">github.com</a>, sign in, click the "+" icon in the top right, and select <strong>New repository</strong>. Name it <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono text-xs">angular-interview-guide</code> and make it Public.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-angular-red flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-xs">2</span>
+                        <span>Save this Code File</span>
+                    </h4>
+                    <p class="text-slate-600 dark:text-slate-300 pl-8">Save this single generated HTML file to your local computer as <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono text-xs">index.html</code>.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-angular-red flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-xs">3</span>
+                        <span>Upload via GitHub Web Interface</span>
+                    </h4>
+                    <p class="text-slate-600 dark:text-slate-300 pl-8">Inside your newly created repository, click the link that says <strong>uploading an existing file</strong>. Drag and drop your <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono text-xs">index.html</code> file into the browser window and commit changes.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-angular-red flex items-center space-x-2">
+                        <span class="w-6 h-6 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-xs">4</span>
+                        <span>Enable GitHub Pages Hosting</span>
+                    </h4>
+                    <p class="text-slate-600 dark:text-slate-300 pl-8">Go to your repository's <strong>Settings</strong> tab -> <strong>Pages</strong> in the left sidebar. Under Build and deployment source, select <strong>Deploy from a branch</strong>, choose the <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono text-xs">main</code> branch and root folder <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono text-xs">/ (root)</code>, then click Save. Your website will be live in under a minute!</p>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button onclick="closeGithubModal()" class="px-4 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl text-sm font-medium hover:bg-slate-800 dark:hover:bg-white/90">Got it, thanks!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage" class="text-sm font-medium">Copied to clipboard!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 py-8 bg-white dark:bg-angular-cardDark text-center text-sm text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 Angular Interview Study Guide • Built for Modern Web Developers</p>
+            <div class="flex items-center space-x-4">
+                <a href="https://angular.dev" target="_blank" class="hover:text-angular-red transition-colors">Angular Docs</a>
+                <span>•</span>
+                <a href="https://github.com" target="_blank" class="hover:text-angular-red transition-colors">GitHub Repo</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Interview Questions Dataset parsed from source document
+        const interviewData = [
+            {
+                partTitle: "Part 1: Angular Fundamentals",
+                partId: "part-1",
+                questions: [
+                    {
+                        id: 1,
+                        q: "1. What is Angular?",
+                        a: "Angular is an open-source, TypeScript-based web application framework maintained by Google. It helps developers build structured, reusable, and scalable applications using components, templates, services, routing, forms, and dependency injection.",
+                        code: null
+                    },
+                    {
+                        id: 2,
+                        q: "2. What is a Single Page Application (SPA)?",
+                        a: "A Single Page Application loads its main HTML document once and updates displayed content as users navigate, without reloading the entire page for every navigation. Advantages include smooth navigation and efficient data fetching. The initial JavaScript download may be large, and server-side rendering can help with initial content delivery and SEO.",
+                        code: null
+                    },
+                    {
+                        id: 3,
+                        q: "3. Why use Angular instead of plain JavaScript?",
+                        a: "Angular provides a structured architecture and built-in features such as components, data binding, directives, dependency injection, routing, forms, HTTP communication, and testing tools. These features help large applications remain maintainable and testable.",
+                        code: null
+                    },
+                    {
+                        id: 4,
+                        q: "4. What is the difference between AngularJS and Angular?",
+                        a: "AngularJS refers to version 1.x and commonly uses JavaScript, controllers, and $scope. Angular (version 2 onward) is a rewrite with a component-based architecture and TypeScript-first development. Modern Angular has different change-detection and application patterns from AngularJS.",
+                        code: null
+                    },
+                    {
+                        id: 5,
+                        q: "5. What is npm?",
+                        a: "npm stands for Node Package Manager. It manages JavaScript packages and project dependencies.",
+                        code: "npm install\nnpm install rxjs\nnpm run start"
+                    },
+                    {
+                        id: 6,
+                        q: "6. What is Angular CLI?",
+                        a: "Angular CLI is a command-line tool for creating, generating, running, testing, and building Angular applications.",
+                        code: "ng new my-app\nng serve\nng generate component home\nng generate service todos\nng build\nng test"
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 2: Components, Templates, and Modules",
+                partId: "part-2",
+                questions: [
+                    {
+                        id: 7,
+                        q: "7. What is a component in Angular?",
+                        a: "A component is a reusable building block of an Angular user interface. It combines a TypeScript class with a template and optional styling.",
+                        code: "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-home',\n  template: '<h1>Hello Angular</h1>',\n  styles: ['h1 { color: blue; }']\n})\nexport class HomeComponent {}"
+                    },
+                    {
+                        id: 8,
+                        q: "8. What are the main parts of a component?",
+                        a: "The selector identifies the component in a template; template or templateUrl defines its view; styles or styleUrl defines styling; the TypeScript class contains properties and methods; and imports lists template dependencies for standalone components.",
+                        code: null
+                    },
+                    {
+                        id: 9,
+                        q: "9. What is a selector?",
+                        a: "A selector specifies the HTML element or other template pattern Angular uses to identify a component.",
+                        code: "@Component({\n  selector: 'app-home',\n  template: '<p>Home page</p>'\n})\nexport class HomeComponent {}\n\n// Use in another template:\n<app-home></app-home>"
+                    },
+                    {
+                        id: 10,
+                        q: "10. What is the difference between template and templateUrl?",
+                        a: "template defines HTML inline in the TypeScript file. templateUrl points to a separate HTML file. Both are valid; separate files are often easier to maintain for larger templates.",
+                        code: "// Inline\ntemplate: '<h1>Home</h1>'\n\n// External\ntemplateUrl: './home.html'"
+                    },
+                    {
+                        id: 11,
+                        q: "11. What is an Angular module?",
+                        a: "An NgModule groups related components, directives, pipes, and providers using @NgModule. Older applications commonly use app.module.ts. Modern Angular supports standalone components and does not require an NgModule for every application.",
+                        code: null
+                    },
+                    {
+                        id: 12,
+                        q: "12. What is the difference between standalone components and NgModules?",
+                        a: "A standalone component manages its template dependencies through its own imports array. An NgModule groups declarations and imports at module level. Modern Angular projects generally default to standalone components.",
+                        code: null
+                    },
+                    {
+                        id: 13,
+                        q: "13. How does a modern Angular application start?",
+                        a: "The browser loads index.html and the application JavaScript. main.ts calls bootstrapApplication(), Angular creates the root component, and Angular renders it in the root selector. Older NgModule applications commonly use bootstrapModule(AppModule).",
+                        code: "import { bootstrapApplication } from '@angular/platform-browser';\nimport { AppComponent } from './app/app.component';\n\nbootstrapApplication(AppComponent);"
+                    },
+                    {
+                        id: 14,
+                        q: "14. What is bootstrapping in Angular?",
+                        a: "Bootstrapping is the process of starting an Angular application by creating its root component or root module and initializing the application. Standalone applications commonly use bootstrapApplication(AppComponent).",
+                        code: null
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 3: Data Binding and Directives",
+                partId: "part-3",
+                questions: [
+                    {
+                        id: 15,
+                        q: "15. What is data binding in Angular?",
+                        a: "Data binding connects component data and methods with the HTML template. Common forms are interpolation, property binding, event binding, and two-way binding.",
+                        code: "{{ username }}\n<button [disabled]=\"isDisabled\">Save</button>\n<button (click)=\"save()\">Save</button>\n<input [(ngModel)]=\"username\">"
+                    },
+                    {
+                        id: 16,
+                        q: "16. What is the difference between interpolation and property binding?",
+                        a: "Interpolation displays an expression as text. Property binding assigns a value to a DOM element or component property. Use property binding for Boolean properties such as disabled.",
+                        code: "<p>{{ username }}</p>\n<button [disabled]=\"isDisabled\">Submit</button>"
+                    },
+                    {
+                        id: 17,
+                        q: "17. What is event binding?",
+                        a: "Event binding responds to user actions such as clicks, keyboard input, and form submission.",
+                        code: "<button (click)=\"showMessage()\">Click</button>\n\nshowMessage(): void {\n  console.log('Button clicked');\n}"
+                    },
+                    {
+                        id: 18,
+                        q: "18. What is two-way data binding?",
+                        a: "Two-way binding synchronizes a form control's value with a component property. The FormsModule is required for ngModel in this example.",
+                        code: "import { FormsModule } from '@angular/forms';\n\n@Component({\n  imports: [FormsModule],\n  template: '<input [(ngModel)]=\"username\"><p>{{ username }}</p>'\n})\nexport class HomeComponent {\n  username = '';\n}"
+                    },
+                    {
+                        id: 19,
+                        q: "19. What are directives in Angular?",
+                        a: "Directives change the behavior or appearance of HTML elements or control which elements are rendered. Common categories are components, structural directives, and attribute directives. Modern Angular also provides built-in control flow such as @if, @for, and @switch.",
+                        code: null
+                    },
+                    {
+                        id: 20,
+                        q: "20. Difference between structural and attribute directives?",
+                        a: "Structural directives control whether or how elements appear in the rendered view. Attribute directives modify an existing element's appearance or behavior.",
+                        code: "@if (isLoggedIn) {\n  <p>Welcome!</p>\n}\n<p [ngClass]=\"{ active: isActive }\">Status</p>"
+                    },
+                    {
+                        id: 21,
+                        q: "21. What is *ngIf?",
+                        a: "In older template syntax, *ngIf conditionally renders an element based on a Boolean expression. Modern Angular supports @if.",
+                        code: "<p *ngIf=\"isLoggedIn\">Welcome!</p>\n\n<!-- Modern syntax -->\n@if (isLoggedIn) {\n  <p>Welcome!</p>\n}"
+                    },
+                    {
+                        id: 22,
+                        q: "22. What is *ngFor?",
+                        a: "*ngFor repeats a template for each item in a collection. In modern Angular, @for is the built-in control-flow alternative, and track helps Angular identify items efficiently.",
+                        code: "<li *ngFor=\"let student of students\">{{ student }}</li>\n\n@for (student of students; track student) {\n  <li>{{ student }}</li>\n}"
+                    },
+                    {
+                        id: 23,
+                        q: "23. What is ngSwitch?",
+                        a: "ngSwitch selects which content to render based on a value, similar to a switch statement in Java. Modern Angular supports @switch, @case, and @default.",
+                        code: "@switch (status) {\n  @case ('success') { <p>Completed</p> }\n  @case ('pending') { <p>In progress</p> }\n  @default { <p>Unknown status</p> }\n}"
+                    },
+                    {
+                        id: 24,
+                        q: "24. What are ngStyle and ngClass?",
+                        a: "ngStyle dynamically applies inline styles, while ngClass conditionally adds or removes CSS classes. Reusable CSS classes are usually preferable for reusable styling.",
+                        code: "<p [ngStyle]=\"{ color: textColor }\">Dynamic color</p>\n<p [ngClass]=\"{ active: isActive }\">Dynamic class</p>"
+                    },
+                    {
+                        id: 25,
+                        q: "25. What are decorators in Angular?",
+                        a: "Decorators attach metadata that Angular uses to understand and configure classes or declarations. Examples include @Component, @Injectable, @NgModule, @Directive, and @Pipe.",
+                        code: "@Component({\n  selector: 'app-home',\n  template: '<h1>Home</h1>'\n})\nexport class HomeComponent {}"
+                    },
+                    {
+                        id: 26,
+                        q: "26. What are pipes in Angular?",
+                        a: "Pipes transform values for display in templates without requiring the original data to be rewritten. Common built-in pipes include uppercase, lowercase, date, currency, percent, decimal, and json.",
+                        code: "<p>{{ username | uppercase }}</p>\n<p>{{ today | date:'dd/MM/yyyy' }}</p>\n<p>{{ price | currency:'INR' }}</p>"
+                    },
+                    {
+                        id: 27,
+                        q: "27. Can we pass parameters to pipes?",
+                        a: "Yes. Add a colon and the parameter after the pipe name.",
+                        code: "{{ price | currency:'INR' }}\n{{ today | date:'dd/MM/yyyy' }}"
+                    },
+                    {
+                        id: 28,
+                        q: "28. Can we chain multiple pipes?",
+                        a: "Yes. Pipes execute from left to right, with the output of one passed to the next.",
+                        code: "{{ username | lowercase | titlecase }}"
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 4: Services and Dependency Injection",
+                partId: "part-4",
+                questions: [
+                    {
+                        id: 29,
+                        q: "29. What is an Angular service?",
+                        a: "A service is a class used to encapsulate reusable business logic, API calls, shared data, or logging functionality.",
+                        code: "ng generate service error-logging\n\nimport { Injectable } from '@angular/core';\n\n@Injectable({ providedIn: 'root' })\nexport class ErrorLoggingService {\n  log(message: string): void {\n    console.error(message);\n  }\n}"
+                    },
+                    {
+                        id: 30,
+                        q: "30. What is dependency injection (DI)?",
+                        a: "Dependency injection is a design pattern in which Angular provides the dependencies a class needs instead of the class creating those dependencies itself. DI improves reusability, separation of concerns, and testability.",
+                        code: "import { Component, inject } from '@angular/core';\nimport { ErrorLoggingService } from './error-logging.service';\n\n@Component({ selector: 'app-home', template: '<p>Home</p>' })\nexport class HomeComponent {\n  private logger = inject(ErrorLoggingService);\n\n  logError(): void {\n    this.logger.log('Something went wrong');\n  }\n}"
+                    },
+                    {
+                        id: 31,
+                        q: "31. What is the purpose of @Injectable()?",
+                        a: "@Injectable() marks a class for Angular's dependency-injection system and enables Angular to generate metadata needed to resolve its dependencies. providedIn: 'root' registers a service with the root injector.",
+                        code: "@Injectable({ providedIn: 'root' })\nexport class UserService {}"
+                    },
+                    {
+                        id: 32,
+                        q: "32. What is a provider in Angular?",
+                        a: "A provider tells Angular how to create or obtain a dependency. Providers can be registered at application root, module, route, or component level. Component-level providers can create separate instances for different component instances.",
+                        code: "@Component({\n  selector: 'app-home',\n  providers: [UserService],\n  template: '<p>Home</p>'\n})\nexport class HomeComponent {}"
+                    },
+                    {
+                        id: 33,
+                        q: "33. What is hierarchical dependency injection?",
+                        a: "Angular has a hierarchy of injectors. A dependency is resolved through the relevant injector hierarchy, and a closer provider can override one defined higher up. Root providers are commonly shared application-wide; component providers are scoped to a component and its descendants.",
+                        code: null
+                    },
+                    {
+                        id: 34,
+                        q: "34. Why not create services manually using new?",
+                        a: "Creating a service manually bypasses Angular's dependency-injection management and can make configuration, mocking, and testing harder. Prefer injecting services so Angular can manage their dependencies and scope.",
+                        code: null
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 5: Lifecycle Hooks",
+                partId: "part-5",
+                questions: [
+                    {
+                        id: 35,
+                        q: "35. What are Angular lifecycle hooks?",
+                        a: "Lifecycle hooks are methods Angular calls at particular stages in a component's or directive's lifecycle. Important hooks include ngOnChanges, ngOnInit, ngDoCheck, ngAfterContentInit, ngAfterContentChecked, ngAfterViewInit, ngAfterViewChecked, and ngOnDestroy.",
+                        code: null
+                    },
+                    {
+                        id: 36,
+                        q: "36. What is ngOnInit()?",
+                        a: "ngOnInit() is called once after Angular initializes a component's input properties. It is commonly used for initialization and loading data.",
+                        code: "import { Component, OnInit } from '@angular/core';\n\n@Component({ selector: 'app-home', template: '<p>Home</p>' })\nexport class HomeComponent implements OnInit {\n  ngOnInit(): void {\n    console.log('Component initialized');\n  }\n}"
+                    },
+                    {
+                        id: 37,
+                        q: "37. Difference between constructor and ngOnInit()?",
+                        a: "The constructor runs when the class instance is created and is commonly used for dependency injection. ngOnInit() is an Angular lifecycle hook called after input initialization and is suitable for component initialization logic.",
+                        code: "constructor() {\n  console.log('Instance created');\n}\n\nngOnInit(): void {\n  console.log('Component initialized');\n}"
+                    },
+                    {
+                        id: 38,
+                        q: "38. What is ngOnDestroy()?",
+                        a: "ngOnDestroy() runs immediately before Angular destroys a component or directive. Use it to clean up manually managed subscriptions, timers, and event listeners. Lifecycle-aware RxJS patterns can also help.",
+                        code: "ngOnDestroy(): void {\n  console.log('Component is being destroyed');\n}"
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 6: Asynchronous Programming, Promises, and RxJS",
+                partId: "part-6",
+                questions: [
+                    {
+                        id: 39,
+                        q: "39. What is asynchronous programming?",
+                        a: "Asynchronous programming allows an application to start an operation, such as an HTTP request, without blocking unrelated work while waiting for the result. JavaScript uses Promises, async/await, and event-loop scheduling.",
+                        code: null
+                    },
+                    {
+                        id: 40,
+                        q: "40. Difference between Promise and Observable?",
+                        a: "A Promise produces one eventual result or error and starts when created. An RxJS Observable can emit multiple values and is typically lazy until subscribed to. Observables provide operators for composing streams and subscriptions can be cancelled, though cancellation of underlying work depends on the producer.",
+                        code: null
+                    },
+                    {
+                        id: 41,
+                        q: "41. What is RxJS?",
+                        a: "RxJS stands for Reactive Extensions for JavaScript. It is a library for working with asynchronous data streams using Observables and operators.",
+                        code: "import { of, map } from 'rxjs';\n\nof(1, 2, 3).pipe(\n  map(value => value * 2)\n).subscribe(value => console.log(value));\n// Output: 2, 4, 6"
+                    },
+                    {
+                        id: 42,
+                        q: "42. What is an Observable?",
+                        a: "An Observable represents a stream of values that can arrive over time. A subscriber can receive values, an error, or a completion notification. An Observable can emit zero, one, or many values.",
+                        code: "import { Observable } from 'rxjs';\n\nconst numbers$ = new Observable<number>(subscriber => {\n  subscriber.next(10);\n  subscriber.next(20);\n  subscriber.complete();\n});\n\nnumbers$.subscribe(value => console.log(value));"
+                    },
+                    {
+                        id: 43,
+                        q: "43. What is a subscription?",
+                        a: "A subscription represents an active execution of an Observable. Calling unsubscribe() stops that subscription from receiving further notifications and runs registered teardown logic. Angular's async pipe or lifecycle-aware patterns can simplify cleanup.",
+                        code: "const subscription = numbers$.subscribe(console.log);\nsubscription.unsubscribe();"
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 7: HTTP Client and API Calls",
+                partId: "part-7",
+                questions: [
+                    {
+                        id: 44,
+                        q: "44. What is HttpClient in Angular?",
+                        a: "HttpClient is Angular's service for sending HTTP requests to backend APIs. It supports GET, POST, PUT, PATCH, DELETE, headers, parameters, interceptors, and typed responses. Standalone applications commonly configure it using provideHttpClient().",
+                        code: "// app.config.ts\nimport { ApplicationConfig } from '@angular/core';\nimport { provideHttpClient } from '@angular/common/http';\n\nexport const appConfig: ApplicationConfig = {\n  providers: [provideHttpClient()]\n};"
+                    },
+                    {
+                        id: 45,
+                        q: "45. How do you call a GET API in Angular?",
+                        a: "Inject HttpClient into a service and use get() to return an Observable. Define an interface for the expected response shape, but remember that TypeScript's generic type does not validate the server response at runtime.",
+                        code: "import { Injectable, inject } from '@angular/core';\nimport { HttpClient } from '@angular/common/http';\nimport { Observable } from 'rxjs';\n\ninterface User { id: number; name: string; }\n\n@Injectable({ providedIn: 'root' })\nexport class UserService {\n  private http = inject(HttpClient);\n\n  getUsers(): Observable<User[]> {\n    return this.http.get<User[]>('/api/users');\n  }\n}"
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 8: TypeScript Interview Questions",
+                partId: "part-8",
+                questions: [
+                    {
+                        id: 46,
+                        q: "46. What is TypeScript, and how is it different from JavaScript?",
+                        a: "TypeScript is a superset of JavaScript that adds static type checking and language features useful for large applications. Angular TypeScript is compiled into JavaScript for browser execution. TypeScript catches many errors during development but does not automatically validate external API data at runtime.",
+                        code: "let age: number = 25;\nlet username: string = 'Avinash';"
+                    },
+                    {
+                        id: 47,
+                        q: "47. Difference between let and var?",
+                        a: "var is function-scoped, while let is block-scoped. Both can be reassigned, but let avoids many accidental scope-related issues.",
+                        code: "if (true) {\n  let a = 10;\n  var b = 20;\n}\nconsole.log(b); // 20\n// console.log(a); // Error: a is not defined"
+                    },
+                    {
+                        id: 48,
+                        q: "48. What is a type annotation?",
+                        a: "A type annotation explicitly specifies the expected type of a variable, parameter, or return value.",
+                        code: "let age: number = 30;\n\nfunction add(a: number, b: number): number {\n  return a + b;\n}"
+                    },
+                    {
+                        id: 49,
+                        q: "49. What are primitive and non-primitive types in TypeScript?",
+                        a: "Primitive types include string, number, boolean, bigint, symbol, null, and undefined. Other common types include arrays, objects, tuples, interfaces, classes, and enums.",
+                        code: "let name: string = 'Amit';\nlet marks: number[] = [70, 80, 90];\nlet student: { name: string; age: number } = {\n  name: 'Amit', age: 25\n};"
+                    },
+                    {
+                        id: 50,
+                        q: "50. What is the any type?",
+                        a: "any disables most static type checking for a value. It can help in limited migration scenarios, but should generally be avoided when a safer type is available. Prefer unknown when the type is not yet known because it requires checking before use.",
+                        code: "let value: any = 10;\nvalue = 'Hello';"
+                    },
+                    {
+                        id: 51,
+                        q: "51. What is an enum?",
+                        a: "An enum defines a named set of related constants. Numeric enums start at zero by default unless another starting value is specified. String unions are another common option in modern TypeScript.",
+                        code: "enum Status {\n  Pending,\n  Success,\n  Failed\n}\n\nconst currentStatus = Status.Success;"
+                    },
+                    {
+                        id: 52,
+                        q: "52. What is type assertion?",
+                        a: "Type assertion tells TypeScript to treat a value as a particular type. It does not convert or validate the value at runtime. Use it only when the asserted type is correct.",
+                        code: "const input = document.querySelector('#username') as HTMLInputElement;\nconsole.log(input.value);"
+                    },
+                    {
+                        id: 53,
+                        q: "53. What is an arrow function?",
+                        a: "An arrow function is a concise way to write a function expression. It inherits this from its surrounding lexical scope, which is useful for callbacks and RxJS operators.",
+                        code: "const add = (a: number, b: number): number => a + b;\nconsole.log(add(2, 3)); // 5"
+                    }
+                ]
+            },
+            {
+                partTitle: "Part 9: Additional Modern Angular Topics",
+                partId: "part-9",
+                questions: [
+                    {
+                        id: 54,
+                        q: "54. What are Angular Signals?",
+                        a: "Signals are a reactive primitive for holding and deriving state. signal() creates writable state, computed() derives a value, and effect() runs side effects in response to signal changes. Use effects thoughtfully; computed values are preferable for pure derivations.",
+                        code: "import { signal, computed } from '@angular/core';\n\ncount = signal(0);\ndoubleCount = computed(() => this.count() * 2);\n\n// Update:\nthis.count.update(value => value + 1);"
+                    },
+                    {
+                        id: 55,
+                        q: "55. What are @Input and @Output?",
+                        a: "@Input passes data from a parent component to a child. @Output emits events from a child to a parent, traditionally using EventEmitter. Modern Angular also offers signal-based input and output APIs.",
+                        code: "// Parent template\n<app-child [name]=\"username\" (saved)=\"handleSaved($event)\"></app-child>"
+                    },
+                    {
+                        id: 56,
+                        q: "56. What is Angular routing?",
+                        a: "Angular Router maps URL paths to components, enabling navigation within a single-page application. It supports route parameters, nested routes, guards, lazy loading, and navigation APIs.",
+                        code: "import { Routes } from '@angular/router';\n\nexport const routes: Routes = [\n  { path: 'home', component: HomeComponent },\n  { path: '', redirectTo: 'home', pathMatch: 'full' }\n];"
+                    },
+                    {
+                        id: 57,
+                        q: "57. Reactive forms vs template-driven forms?",
+                        a: "Template-driven forms are primarily configured in the HTML and suit simpler forms. Reactive forms define the form model explicitly in TypeScript, making complex validation and dynamic forms easier to manage and test.",
+                        code: null
+                    },
+                    {
+                        id: 58,
+                        q: "58. What is an HTTP interceptor?",
+                        a: "An HTTP interceptor can inspect or modify outgoing HTTP requests and incoming responses. Common uses include attaching authentication headers, logging, and centralized error handling.",
+                        code: null
+                    },
+                    {
+                        id: 59,
+                        q: "59. What is change detection and OnPush?",
+                        a: "Change detection updates the rendered view when application state changes. OnPush allows Angular to skip some checks until relevant triggers occur, such as changed inputs, events in the component subtree, or reactive updates recognized by Angular. It can improve performance when used with sound state-management practices.",
+                        code: null
+                    },
+                    {
+                        id: 60,
+                        q: "60. What is lazy loading?",
+                        a: "Lazy loading loads a route's code only when it is needed instead of including every feature in the initial application bundle. It can reduce the initial download size and improve startup performance.",
+                        code: null
+                    },
+                    {
+                        id: 61,
+                        q: "61. How do you handle errors in RxJS?",
+                        a: "RxJS provides operators such as catchError to handle stream errors. The error strategy depends on whether the stream should recover, return a fallback, or propagate the error.",
+                        code: "import { catchError, of } from 'rxjs';\n\nthis.http.get('/api/data').pipe(\n  catchError(error => {\n    console.error(error);\n    return of([]);\n  })\n);"
+                    },
+                    {
+                        id: 62,
+                        q: "62. What is the difference between switchMap, mergeMap, and concatMap?",
+                        a: "switchMap switches to the newest inner Observable and unsubscribes from the previous one; it is useful for search requests where only the latest result matters. mergeMap runs inner Observables concurrently. concatMap processes them sequentially in order.",
+                        code: null
+                    },
+                    {
+                        id: 63,
+                        q: "63. How do you test an Angular component?",
+                        a: "Angular testing commonly uses TestBed to configure a testing environment, create components, provide dependencies, and test behavior. Exact tooling depends on the Angular project configuration.",
+                        code: null
+                    },
+                    {
+                        id: 64,
+                        q: "64. How can you improve Angular application performance?",
+                        a: "Use lazy loading, optimize images and bundles, avoid unnecessary work in templates, use track expressions in @for, use suitable change-detection strategies, clean up subscriptions, and profile before optimizing. Server-side rendering or prerendering can help with initial content delivery when appropriate.",
+                        code: null
+                    }
+                ]
+            }
+        ];
+
+        let typewriterModeEnabled = false;
+
+        // Render Questions to DOM
+        function renderQuestions(filterText = '') {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            let totalVisible = 0;
+
+            interviewData.forEach(part => {
+                const filteredQuestions = part.questions.filter(item => {
+                    const matchText = (item.q + " " + item.a + " " + (item.code || "")).toLowerCase();
+                    return matchText.includes(filterText.toLowerCase());
+                });
+
+                if (filteredQuestions.length === 0) return;
+                totalVisible += filteredQuestions.length;
+
+                const partSection = document.createElement('section');
+                partSection.id = part.partId;
+                partSection.className = 'space-y-6 pt-4';
+
+                const partHeader = document.createElement('div');
+                partHeader.className = 'flex items-center space-x-3 border-b border-slate-200 dark:border-slate-800 pb-3';
+                partHeader.innerHTML = `
+                    <div class="w-3 h-3 rounded-full bg-angular-red"></div>
+                    <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">${part.partTitle}</h2>
+                `;
+                partSection.appendChild(partHeader);
+
+                const cardsGrid = document.createElement('div');
+                cardsGrid.className = 'space-y-6';
+
+                filteredQuestions.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white dark:bg-angular-cardDark rounded-2xl p-6 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow relative group';
+                    
+                    let codeHtml = '';
+                    if (item.code) {
+                        const escapedCode = escapeHtml(item.code);
+                        codeHtml = `
+                            <div class="mt-4 rounded-xl bg-slate-900 dark:bg-slate-950 border border-slate-800 overflow-hidden">
+                                <div class="bg-slate-800/80 px-4 py-2 flex items-center justify-between text-xs text-slate-400 font-mono border-b border-slate-700/50">
+                                    <span>typescript / snippet</span>
+                                    <button onclick="copySnippet(this)" data-code="${encodeURIComponent(item.code)}" class="hover:text-white flex items-center space-x-1.5 transition-colors">
+                                        <i class="fa-regular fa-copy"></i>
+                                        <span>Copy</span>
+                                    </button>
+                                </div>
+                                <pre class="p-4 text-xs sm:text-sm text-slate-200 overflow-x-auto leading-relaxed"><code>${escapedCode}</code></pre>
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between gap-4 mb-3">
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">${item.q}</h3>
+                            <span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-mono shrink-0">#${item.id}</span>
+                        </div>
+                        <div class="answer-box text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed" data-full-text="${escapeHtml(item.a)}">
+                            ${typewriterModeEnabled ? '<span class="typing-target"></span>' : item.a}
+                        </div>
+                        ${codeHtml}
+                    `;
+                    cardsGrid.appendChild(card);
+                });
+
+                partSection.appendChild(cardsGrid);
+                container.appendChild(partSection);
+            });
+
+            if (totalVisible === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 bg-white dark:bg-angular-cardDark rounded-2xl border border-slate-200 dark:border-slate-800">
+                        <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+                        <h3 class="font-bold text-lg mb-1">No matching questions found</h3>
+                        <p class="text-slate-500 text-sm">Try searching for another keyword like "Signals", "RxJS", or "Components".</p>
+                    </div>
+                `;
+            } else if (typewriterModeEnabled) {
+                triggerTypewriterEffect();
+            }
+        }
+
+        // Helper to escape HTML safely
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Typewriter Animation Runner
+        function triggerTypewriterEffect() {
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                const fullText = box.getAttribute('data-full-text');
+                const target = box.querySelector('.typing-target') || box;
+                if (!target) return;
+                
+                target.textContent = '';
+                target.classList.add('typing-cursor');
+                let i = 0;
+                const speed = 10; // milliseconds per character
+
+                function type() {
+                    if (i < fullText.length) {
+                        target.textContent += fullText.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        target.classList.remove('typing-cursor');
+                    }
+                }
+                type();
+            });
+        }
+
+        // Copy Code Snippet
+        function copySnippet(btn) {
+            const encodedCode = btn.getAttribute('data-code');
+            const code = decodeURIComponent(encodedCode);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast('Code snippet copied to clipboard!');
+                }).catch(() => {
+                    fallbackCopy(code);
+                });
+            } else {
+                fallbackCopy(code);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Code snippet copied to clipboard!');
+            } catch (err) {
+                showToast('Failed to copy code.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // GitHub Modal Controls
+        function openGithubModal() {
+            document.getElementById('githubModal').classList.remove('hidden');
+            document.getElementById('githubModal').classList.add('flex');
+        }
+
+        function closeGithubModal() {
+            document.getElementById('githubModal').classList.remove('flex');
+            document.getElementById('githubModal').classList.add('hidden');
+        }
+
+        // Window load initialization
+        window.onload = function() {
+            // Initial Render
+            renderQuestions();
+
+            // Search input listener
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                renderQuestions(e.target.value);
+            });
+
+            // Theme Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const htmlElement = document.documentElement;
+            
+            // Check stored theme preference
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (htmlElement.classList.contains('dark')) {
+                    htmlElement.classList.remove('dark');
+                    localStorage.theme = 'light';
+                } else {
+                    htmlElement.classList.add('dark');
+                    localStorage.theme = 'dark';
+                }
+            });
+
+            // Typewriter Toggle button
+            const toggleTypewriterBtn = document.getElementById('toggleTypewriter');
+            toggleTypewriterBtn.addEventListener('click', () => {
+                typewriterModeEnabled = !typewriterModeEnabled;
+                if (typewriterModeEnabled) {
+                    toggleTypewriterBtn.classList.add('bg-red-200', 'dark:bg-red-900');
+                    showToast('Typewriter mode enabled!');
+                } else {
+                    toggleTypewriterBtn.classList.remove('bg-red-200', 'dark:bg-red-900');
+                    showToast('Typewriter mode disabled.');
+                }
+                renderQuestions(searchInput.value);
+            });
+
+            // Mobile Sidebar Toggles
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.remove('-translate-x-full');
+            });
+
+            closeSidebar.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+            });
+
+            // Close sidebar when clicking nav links on mobile
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    sidebar.classList.add('-translate-x-full');
+                });
+            });
+        };
+    </script>
+</body>
+</html>
